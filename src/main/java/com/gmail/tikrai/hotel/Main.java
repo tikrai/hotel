@@ -4,10 +4,12 @@ import java.util.Scanner;
 
 public class Main {
   public static void main(String[] args) {
+    HotelProperties props = HotelProperties.load();
     Scanner scanner = new Scanner(System.in);
     boolean running = true;
 
-    System.out.println("=== Hotel Management System ===");
+    System.out.println("=== Hotel Management System with " + props.roomCount() +
+        " rooms with base price of " + props.basePrice() + " EUR ===");
 
     while (running) {
       printMenu();
