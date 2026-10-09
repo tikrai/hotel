@@ -1,3 +1,9 @@
 package com.gmail.tikrai.hotel;
 
-public record Action(int id, String name) {}
+import java.util.function.Predicate;
+
+public record Action(
+    int id,
+    String name,
+    Predicate<Hotel> action
+) {}

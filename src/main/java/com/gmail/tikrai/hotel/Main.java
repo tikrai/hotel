@@ -1,25 +1,25 @@
 package com.gmail.tikrai.hotel;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
-  public static List<Action> actions = Map.of(
-      1, "Guest registration",
-      2, "Check-out of the guest",
-      3, "Review of room availability",
-      4, "Room occupancy history and status",
-      5, "Room occupancy report",
-      0, "Exit application"
-  ).entrySet().stream().map(e -> new Action(e.getKey(), e.getValue())).toList();
+  public static Scanner scanner = new Scanner(System.in);
+  public static List<Action> actions = List.of(
+      new Action(1, "Guest registration", x -> x.checkin(scanner)),
+      new Action(2, "Check-out of the guest", x -> x.checkout(scanner)),
+      new Action(3, "Review of room availability", Hotel::availability),
+      new Action(4, "Room occupancy history and status", x -> true),
+      new Action(5, "Room occupancy report", x -> true),
+      new Action(0, "Exit application", x -> true));
 
   public static void main(String[] args) {
     HotelProperties props = HotelProperties.load();
     System.out.println("=== Hotel Management System with " + props.roomCount() +
         " rooms with base price of " + props.basePrice() + " EUR ===");
 
-    Scanner scanner = new Scanner(System.in);
+    Hotel hotel = Hotel.initiate(props);
+
     boolean running = true;
 
     while (running) {
@@ -29,13 +29,15 @@ public class Main {
         scanner.nextLine();
 
         if (choice == 0) {
-          System.out.println("Exiting application. Goodbye!");
+          System.out.println("Closing hotel. Goodbye!");
           running = false;
         } else {
-          System.out.println(handleChoice(actions, choice));
+          Action action = handleChoice(actions, choice);
+          System.out.println("\n" + action.name() + " option selected");
+          action.action().test(hotel);
         }
       } else {
-        System.out.println("Error: Please enter a valid number.");
+        System.out.println("Error: Please enter a valid number");
         scanner.next();
       }
     }
@@ -48,12 +50,11 @@ public class Main {
     System.out.print("Enter your choice: ");
   }
 
-  public static String handleChoice(List<Action> actions, int choice) {
-    Action chosen = actions.stream()
+  public static Action handleChoice(List<Action> actions, int choice) {
+    return actions.stream()
         .filter(action -> action.id() == choice)
         .findAny()
         .orElseGet(() -> new Action(
-            choice, "Invalid choice. Please enter a number between 0 and 5"));
-    return "Option selected - " + chosen.name();
+            choice, "Invalid choice. Please enter a number between 0 and 5", x -> false));
   }
 }
