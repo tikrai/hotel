@@ -8,8 +8,6 @@ import java.util.stream.IntStream;
 
 public class Hotel {
 
-  private static final Random random = new Random();
-
   private List<Room> rooms = new ArrayList<>();
 
   public static Hotel initiate(HotelProperties props) {
@@ -22,16 +20,16 @@ public class Hotel {
     return hotel;
   }
 
-  public void availability() {
+  public String availability() {
     List<String> rooms = this.rooms.stream()
         .filter(room -> !room.isAvailable())
         .map(Room::info)
         .toList();
-    System.out.println(rooms.isEmpty() ? "All rooms are empty" : "Occupied rooms:");
-    rooms.forEach(System.out::println);
+    return (rooms.isEmpty() ? "All rooms are empty" : "Occupied rooms:\n")
+        + String.join("\n", rooms);
   }
 
-  public void checkin(Scanner scanner) {
+  public void checkin(Scanner scanner, Random random) {
     List<Room> rooms = this.rooms.stream().filter(Room::isAvailable).toList();
     if (rooms.isEmpty()) {
       System.out.println("No rooms are available");
@@ -88,5 +86,9 @@ public class Hotel {
       }
       System.out.print("Invalid input. ");
     }
+  }
+
+  public List<Room> getRooms() {
+    return rooms;
   }
 }

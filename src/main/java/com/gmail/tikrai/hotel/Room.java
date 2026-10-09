@@ -40,4 +40,12 @@ public class Room {
       super(number, price * 1.5);
     }
   }
+
+  public int getNumber() {
+    return number;
+  }
+
+  public double getPrice() {
+    return price;
+  }
 }

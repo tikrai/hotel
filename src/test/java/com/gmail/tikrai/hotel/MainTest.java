@@ -9,17 +9,16 @@ public class MainTest {
 
   @Test
   public void testValidOptions() {
-    assertEquals("Option selected - Guest registration", Main.handleChoice(actions, 1));
-    assertEquals("Option selected - Check-out of the guest", Main.handleChoice(actions, 2));
-    assertEquals("Option selected - Review of room availability", Main.handleChoice(actions, 3));
-    assertEquals("Option selected - Room occupancy history and status", Main.handleChoice(actions, 4));
-    assertEquals("Option selected - Room occupancy report", Main.handleChoice(actions, 5));
+    assertEquals(actions.get(0), Main.handleChoice(actions, 1));
+    assertEquals(actions.get(1), Main.handleChoice(actions, 2));
+    assertEquals(actions.get(2), Main.handleChoice(actions, 3));
+    assertEquals(actions.get(3), Main.handleChoice(actions, 4));
+    assertEquals(actions.get(4), Main.handleChoice(actions, 5));
   }
 
   @Test
   public void testInvalidOption() {
-    assertEquals(
-        "Option selected - Invalid choice. Please enter a number between 0 and 5",
-        Main.handleChoice(actions, 99));
+    assertEquals(99, Main.handleChoice(actions, 99).id());
+    assertEquals("Invalid", Main.handleChoice(actions, 99).name());
   }
 }

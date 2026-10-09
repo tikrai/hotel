@@ -1,17 +1,20 @@
 package com.gmail.tikrai.hotel;
 
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
   public static Scanner scanner = new Scanner(System.in);
+  private static final Random random = new Random();
+
   public static List<Action> actions = List.of(
-      new Action(1, "Guest registration", x -> x.checkin(scanner)),
-      new Action(2, "Check-out of the guest", x -> x.checkout(scanner)),
-      new Action(3, "Review of room availability", Hotel::availability),
-      new Action(4, "Room occupancy history and status", x -> {}),
-      new Action(5, "Room occupancy report", x -> {}),
-      new Action(0, "Exit application", x -> {}));
+      new Action(1, "Guest registration", h -> h.checkin(scanner, random)),
+      new Action(2, "Check-out of the guest", h -> h.checkout(scanner)),
+      new Action(3, "Review of room availability", h -> System.out.println(h.availability())),
+      new Action(4, "Room occupancy history and status", h -> {}),
+      new Action(5, "Room occupancy report", h -> {}),
+      new Action(0, "Exit application", h -> {}));
 
   public static void main(String[] args) {
     HotelProperties props = HotelProperties.load();
@@ -54,6 +57,6 @@ public class Main {
     return actions.stream()
         .filter(action -> action.id() == choice)
         .findAny()
-        .orElseGet(() -> new Action(choice, "Invalid", x -> {}));
+        .orElseGet(() -> new Action(choice, "Invalid", h -> {}));
   }
 }
