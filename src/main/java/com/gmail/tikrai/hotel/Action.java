@@ -1,9 +1,9 @@
 package com.gmail.tikrai.hotel;
 
-import java.util.function.Predicate;
+import java.util.function.Consumer;
 
 public record Action(
     int id,
     String name,
-    Predicate<Hotel> action
+    Consumer<Hotel> action
 ) {}

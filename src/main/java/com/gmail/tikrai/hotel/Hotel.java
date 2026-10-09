@@ -22,24 +22,23 @@ public class Hotel {
     return hotel;
   }
 
-  public boolean availability() {
+  public void availability() {
     List<String> rooms = this.rooms.stream()
         .filter(room -> !room.isAvailable())
-        .map(Room::stat)
+        .map(Room::info)
         .toList();
     System.out.println(rooms.isEmpty() ? "All rooms are empty" : "Occupied rooms:");
     rooms.forEach(System.out::println);
-    return true;
   }
 
-  public boolean checkin(Scanner scanner) {
-    Guest guest = readGuest(scanner);
-    return this.rooms.stream()
-        .filter(Room::isAvailable)
-        .sorted((a, b) -> random.nextInt(3) - 1)
-        .findAny()
-        .map(room -> room.checkIn(guest))
-        .isPresent();
+  public void checkin(Scanner scanner) {
+    List<Room> rooms = this.rooms.stream().filter(Room::isAvailable).toList();
+    if (rooms.isEmpty()) {
+      System.out.println("No rooms are available");
+    } else {
+      Room room = rooms.get(random.nextInt(rooms.size())).checkIn(readGuest(scanner));
+      System.out.println("Successful checkin in room " + room.info());
+    }
   }
 
   private Guest readGuest(Scanner scanner) {
@@ -65,10 +64,12 @@ public class Hotel {
     return new Guest(firstName, lastName);
   }
 
-  public boolean checkout(Scanner scanner) {
+  public void checkout(Scanner scanner) {
     int number = readNumber(scanner);
-    rooms.get(number - 1).checkOut();
-    return true;
+    Guest guest = rooms.get(number - 1).checkOut();
+    System.out.println(guest == null
+        ? "Room is not occupied"
+        : guest + " was successfully checked out");
   }
 
   private int readNumber(Scanner scanner) {
@@ -79,7 +80,6 @@ public class Hotel {
       if (scanner.hasNextInt()) {
         int roomNumber = scanner.nextInt();
         scanner.nextLine();
-
         if (roomNumber >= 1 && roomNumber <= size) {
           return roomNumber;
         }

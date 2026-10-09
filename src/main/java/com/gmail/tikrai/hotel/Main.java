@@ -9,9 +9,9 @@ public class Main {
       new Action(1, "Guest registration", x -> x.checkin(scanner)),
       new Action(2, "Check-out of the guest", x -> x.checkout(scanner)),
       new Action(3, "Review of room availability", Hotel::availability),
-      new Action(4, "Room occupancy history and status", x -> true),
-      new Action(5, "Room occupancy report", x -> true),
-      new Action(0, "Exit application", x -> true));
+      new Action(4, "Room occupancy history and status", x -> {}),
+      new Action(5, "Room occupancy report", x -> {}),
+      new Action(0, "Exit application", x -> {}));
 
   public static void main(String[] args) {
     HotelProperties props = HotelProperties.load();
@@ -34,10 +34,10 @@ public class Main {
         } else {
           Action action = handleChoice(actions, choice);
           System.out.println("\n" + action.name() + " option selected");
-          action.action().test(hotel);
+          action.action().accept(hotel);
         }
       } else {
-        System.out.println("Error: Please enter a valid number");
+        System.out.println("\nInvalid option selected");
         scanner.next();
       }
     }
@@ -54,7 +54,6 @@ public class Main {
     return actions.stream()
         .filter(action -> action.id() == choice)
         .findAny()
-        .orElseGet(() -> new Action(
-            choice, "Invalid choice. Please enter a number between 0 and 5", x -> false));
+        .orElseGet(() -> new Action(choice, "Invalid", x -> {}));
   }
 }

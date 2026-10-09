@@ -24,13 +24,14 @@ public class Room {
     return this;
   }
 
-  public String stat() {
+  public String info() {
     return number + ". " + guest;
   }
 
-  public Room checkOut() {
+  public Guest checkOut() {
+    Guest guest = this.guest;
     this.guest = null;
-    return this;
+    return guest;
   }
 
   public static class BusinessRoom extends Room {
