@@ -114,12 +114,12 @@ class HotelTest {
 
     hotel.checkin();
 
-    assertEquals(
-        """
-            #2 occupiedCount = 1, profit = 15.0
-            #1 occupiedCount = 0, profit = 0.0
-            #3 occupiedCount = 0, profit = 0.0
-            #4 occupiedCount = 0, profit = 0.0""",
-        hotel.occupancyReport());
+    String expected = """
+        #2 occupiedCount = 1, profit = 15.0
+        #1 occupiedCount = 0, profit = 0.0
+        #3 occupiedCount = 0, profit = 0.0
+        #4 occupiedCount = 0, profit = 0.0""";
+    assertEquals(expected, hotel.occupancyReport());
+    assertEquals(expected, hotel.occupancyReport());
   }
 }

@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.joining;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.stream.IntStream;
@@ -14,6 +15,7 @@ public class Hotel {
   private final Scanner scanner;
   private final Random random;
   private List<Room> rooms = new ArrayList<>();
+  private String occupancyReport;
 
   public Hotel(Scanner scanner, Random random) {
     this.scanner = scanner;
@@ -41,9 +43,12 @@ public class Hotel {
 
   public String checkin() {
     List<Room> rooms = this.rooms.stream().filter(Room::isAvailable).toList();
-    return rooms.isEmpty()
-      ? "No rooms are available"
-      : rooms.get(random.nextInt(rooms.size())).checkIn(readGuest());
+
+    if (rooms.isEmpty()) {
+      return "No rooms are available";
+    }
+    occupancyReport = null;
+    return rooms.get(random.nextInt(rooms.size())).checkIn(readGuest());
   }
 
   private Guest readGuest() {
@@ -70,10 +75,10 @@ public class Hotel {
   }
 
   public String checkout() {
-    Guest guest = rooms.get(readNumber() - 1).checkOut();
-    return guest == null
-        ? "Room is not occupied"
-        : guest + " was successfully checked out";
+    return Optional.ofNullable(rooms.get(readNumber() - 1).checkOut()).map(guest -> {
+      occupancyReport = null;
+      return guest + " was successfully checked out";
+    }).orElse("Room is not occupied");
   }
 
   public String roomHistory() {
@@ -81,11 +86,14 @@ public class Hotel {
   }
 
   public String occupancyReport() {
-    return rooms.stream()
-        .map(Room::profitStat)
-        .sorted()
-        .map(Objects::toString)
-        .collect(joining("\n"));
+    if (occupancyReport == null) {
+      occupancyReport = rooms.stream()
+          .map(Room::profitStat)
+          .sorted()
+          .map(Objects::toString)
+          .collect(joining("\n"));
+    }
+    return occupancyReport;
   }
 
   private int readNumber() {
