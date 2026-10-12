@@ -16,7 +16,7 @@ class HotelTest {
 
   @Mock private Scanner scanner;
   @Mock private Random random;
-  Hotel hotel;
+  private Hotel hotel;
 
   @BeforeEach
   void setup() {
@@ -50,15 +50,14 @@ class HotelTest {
         .thenReturn("Smith");
     Mockito.when(random.nextInt(4)).thenReturn(1);
 
-    hotel.checkin();
-
+    assertEquals("Successful checkin in room 2. John Smith", hotel.checkin());
     assertEquals("Occupied rooms:\n" + "2. John Smith", hotel.availability());
   }
 
   @Test
-  void testEmptyHotelCheckin() {
+  void testZeroRoomHotelCheckin() {
     hotel = Hotel.initiate(new HotelProperties(0, 10), scanner, random);
-    hotel.checkin();
+    assertEquals("No rooms are available", hotel.checkin());
     assertEquals("All rooms are empty", hotel.availability());
   }
 
@@ -70,8 +69,57 @@ class HotelTest {
     Mockito.when(scanner.nextInt()).thenReturn(7).thenReturn(2);
 
     hotel.checkin();
-    hotel.checkout();
 
+    assertEquals("John Smith was successfully checked out", hotel.checkout());
     assertEquals("All rooms are empty", hotel.availability());
+  }
+
+  @Test
+  void testEmptyHotelCheckOut() {
+    Mockito.when(scanner.hasNextInt()).thenReturn(true);
+    Mockito.when(scanner.nextInt()).thenReturn(2);
+
+    assertEquals("Room is not occupied", hotel.checkout());
+  }
+
+  @Test
+  void testRoomHistory() {
+    Mockito.when(scanner.nextLine()).thenReturn("John").thenReturn("Smith");
+    Mockito.when(random.nextInt(4)).thenReturn(1);
+    Mockito.when(scanner.hasNextInt()).thenReturn(false).thenReturn(true);
+    Mockito.when(scanner.nextInt()).thenReturn(0).thenReturn(1).thenReturn(2);
+
+    hotel.checkin();
+
+    assertEquals(
+        """
+            Guest history of room #1:
+
+            ======
+            Room is available""",
+        hotel.roomHistory());
+    assertEquals(
+        """
+            Guest history of room #2:
+            John Smith
+            ======
+            Room is occupied""",
+        hotel.roomHistory());
+  }
+
+  @Test
+  void testProfitStat() {
+    Mockito.when(scanner.nextLine()).thenReturn("John").thenReturn("Smith");
+    Mockito.when(random.nextInt(4)).thenReturn(1);
+
+    hotel.checkin();
+
+    assertEquals(
+        """
+            #2 occupiedCount = 1, profit = 15.0
+            #1 occupiedCount = 0, profit = 0.0
+            #3 occupiedCount = 0, profit = 0.0
+            #4 occupiedCount = 0, profit = 0.0""",
+        hotel.occupancyReport());
   }
 }
