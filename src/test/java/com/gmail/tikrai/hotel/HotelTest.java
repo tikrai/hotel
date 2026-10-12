@@ -1,18 +1,30 @@
 package com.gmail.tikrai.hotel;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Random;
 import java.util.Scanner;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class HotelTest {
+
+  @Mock private Scanner scanner;
+  @Mock private Random random;
+  Hotel hotel;
+
+  @BeforeEach
+  void setup() {
+    hotel = Hotel.initiate(new HotelProperties(4, 10), scanner, random);
+  }
 
   @Test
   void testHotelInitiation() {
-    Hotel hotel = Hotel.initiate(new HotelProperties(4, 10));
-
     assertEquals(4, hotel.getRooms().size());
     assertEquals(1, hotel.getRooms().get(0).getNumber());
     assertEquals(2, hotel.getRooms().get(1).getNumber());
@@ -26,51 +38,39 @@ class HotelTest {
 
   @Test
   void testEmptyHotelRoomAvailability() {
-    Hotel hotel = Hotel.initiate(new HotelProperties(2, 10));
-
     assertEquals("All rooms are empty", hotel.availability());
   }
 
   @Test
   void testCheckin() {
-    Hotel hotel = Hotel.initiate(new HotelProperties(2, 10));
-    Scanner scanner = Mockito.mock(Scanner.class);
-    Random random = Mockito.mock(Random.class);
     Mockito.when(scanner.nextLine())
         .thenReturn("")
         .thenReturn("John")
         .thenReturn("")
         .thenReturn("Smith");
-    Mockito.when(random.nextInt(2)).thenReturn(1);
+    Mockito.when(random.nextInt(4)).thenReturn(1);
 
-    hotel.checkin(scanner, random);
+    hotel.checkin();
 
     assertEquals("Occupied rooms:\n" + "2. John Smith", hotel.availability());
   }
 
   @Test
   void testEmptyHotelCheckin() {
-    Hotel hotel = Hotel.initiate(new HotelProperties(0, 10));
-    Scanner scanner = Mockito.mock(Scanner.class);
-    Random random = Mockito.mock(Random.class);
-
-    hotel.checkin(scanner, random);
-
+    hotel = Hotel.initiate(new HotelProperties(0, 10), scanner, random);
+    hotel.checkin();
     assertEquals("All rooms are empty", hotel.availability());
   }
 
   @Test
   void testCheckOut() {
-    Hotel hotel = Hotel.initiate(new HotelProperties(2, 10));
-    Scanner scanner = Mockito.mock(Scanner.class);
-    Random random = Mockito.mock(Random.class);
     Mockito.when(scanner.nextLine()).thenReturn("John").thenReturn("Smith");
-    Mockito.when(random.nextInt(2)).thenReturn(1);
+    Mockito.when(random.nextInt(4)).thenReturn(1);
     Mockito.when(scanner.hasNextInt()).thenReturn(true);
     Mockito.when(scanner.nextInt()).thenReturn(7).thenReturn(2);
 
-    hotel.checkin(scanner, random);
-    hotel.checkout(scanner);
+    hotel.checkin();
+    hotel.checkout();
 
     assertEquals("All rooms are empty", hotel.availability());
   }

@@ -9,8 +9,8 @@ public class Main {
   private static final Random random = new Random();
 
   public static List<Action> actions = List.of(
-      new Action(1, "Guest registration", h -> h.checkin(scanner, random)),
-      new Action(2, "Check-out of the guest", h -> h.checkout(scanner)),
+      new Action(1, "Guest registration", Hotel::checkin),
+      new Action(2, "Check-out of the guest", Hotel::checkout),
       new Action(3, "Review of room availability", h -> System.out.println(h.availability())),
       new Action(4, "Room occupancy history and status", h -> {}),
       new Action(5, "Room occupancy report", h -> {}),
@@ -21,7 +21,7 @@ public class Main {
     System.out.println("=== Hotel Management System with " + props.roomCount() +
         " rooms with base price of " + props.basePrice() + " EUR ===");
 
-    Hotel hotel = Hotel.initiate(props);
+    Hotel hotel = Hotel.initiate(props, scanner, random);
 
     boolean running = true;
 

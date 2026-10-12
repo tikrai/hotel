@@ -8,10 +8,17 @@ import java.util.stream.IntStream;
 
 public class Hotel {
 
+  private final Scanner scanner;
+  private final Random random;
   private List<Room> rooms = new ArrayList<>();
 
-  public static Hotel initiate(HotelProperties props) {
-    Hotel hotel = new Hotel();
+  public Hotel(Scanner scanner, Random random) {
+    this.scanner = scanner;
+    this.random = random;
+  }
+
+  public static Hotel initiate(HotelProperties props, Scanner scanner, Random random) {
+    Hotel hotel = new Hotel(scanner, random);
     hotel.rooms = IntStream.range(1, props.roomCount() + 1)
         .mapToObj(i -> i % 2 != 0
             ? new Room(i, props.basePrice())
@@ -29,17 +36,17 @@ public class Hotel {
         + String.join("\n", rooms);
   }
 
-  public void checkin(Scanner scanner, Random random) {
+  public void checkin() {
     List<Room> rooms = this.rooms.stream().filter(Room::isAvailable).toList();
     if (rooms.isEmpty()) {
       System.out.println("No rooms are available");
     } else {
-      Room room = rooms.get(random.nextInt(rooms.size())).checkIn(readGuest(scanner));
+      Room room = rooms.get(random.nextInt(rooms.size())).checkIn(readGuest());
       System.out.println("Successful checkin in room " + room.info());
     }
   }
 
-  private Guest readGuest(Scanner scanner) {
+  private Guest readGuest() {
     String firstName = "";
     String lastName = "";
 
@@ -62,15 +69,15 @@ public class Hotel {
     return new Guest(firstName, lastName);
   }
 
-  public void checkout(Scanner scanner) {
-    int number = readNumber(scanner);
+  public void checkout() {
+    int number = readNumber();
     Guest guest = rooms.get(number - 1).checkOut();
     System.out.println(guest == null
         ? "Room is not occupied"
         : guest + " was successfully checked out");
   }
 
-  private int readNumber(Scanner scanner) {
+  private int readNumber() {
     int size = rooms.size();
     while (true) {
       System.out.print("Enter room number to checkout from (1-" + size + "): ");
