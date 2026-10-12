@@ -1,5 +1,7 @@
 package com.gmail.tikrai.hotel;
 
+import static java.util.stream.Collectors.joining;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,11 +36,8 @@ public class Room {
     return guest;
   }
 
-  public static class BusinessRoom extends Room {
-
-    public BusinessRoom(int number, double price) {
-      super(number, price * 1.5);
-    }
+  public ProfitStat profitStat() {
+    return new ProfitStat(number, guests.size(), guests.size() * price);
   }
 
   public int getNumber() {
@@ -47,5 +46,37 @@ public class Room {
 
   public double getPrice() {
     return price;
+  }
+
+  public String history() {
+    String guestList = this.guests.stream().map(Guest::toString).collect(joining("\n"));
+    return "Guest history of room #" + this.number + ":\n" +
+        guestList + 
+        "\n======\nRoom is " + (isAvailable() ? "available" : "occupied");
+  }
+
+  public static class BusinessRoom extends Room {
+
+    public BusinessRoom(int number, double price) {
+      super(number, price * 1.5);
+    }
+  }
+
+  public record ProfitStat(
+      Integer number,
+      int occupiedCount,
+      double profit
+  ) implements Comparable<ProfitStat> {
+    @Override
+    public String toString() {
+      return "#" + number + " occupiedCount = " + occupiedCount + ", profit = " + profit;
+    }
+
+    @Override
+    public int compareTo(ProfitStat o) {
+      return this.profit == o.profit
+          ? this.number.compareTo(o.number)
+          : this.profit > o.profit ? -1 : 1;
+    }
   }
 }

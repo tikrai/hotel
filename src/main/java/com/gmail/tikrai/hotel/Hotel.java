@@ -1,7 +1,10 @@
 package com.gmail.tikrai.hotel;
 
+import static java.util.stream.Collectors.joining;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.stream.IntStream;
@@ -70,11 +73,22 @@ public class Hotel {
   }
 
   public void checkout() {
-    int number = readNumber();
-    Guest guest = rooms.get(number - 1).checkOut();
+    Guest guest = rooms.get(readNumber() - 1).checkOut();
     System.out.println(guest == null
         ? "Room is not occupied"
         : guest + " was successfully checked out");
+  }
+
+  public String roomHistory() {
+    return rooms.get(readNumber() - 1).history();
+  }
+
+  public String occupancyReport() {
+    return rooms.stream()
+        .map(Room::profitStat)
+        .sorted()
+        .map(Objects::toString)
+        .collect(joining("\n"));
   }
 
   private int readNumber() {

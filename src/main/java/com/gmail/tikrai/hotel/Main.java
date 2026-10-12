@@ -12,8 +12,8 @@ public class Main {
       new Action(1, "Guest registration", Hotel::checkin),
       new Action(2, "Check-out of the guest", Hotel::checkout),
       new Action(3, "Review of room availability", h -> System.out.println(h.availability())),
-      new Action(4, "Room occupancy history and status", h -> {}),
-      new Action(5, "Room occupancy report", h -> {}),
+      new Action(4, "Room occupancy history and status", h -> System.out.println(h.roomHistory())),
+      new Action(5, "Room occupancy report", h -> System.out.println(h.occupancyReport())),
       new Action(0, "Exit application", h -> {}));
 
   public static void main(String[] args) {
