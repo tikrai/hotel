@@ -20,10 +20,10 @@ public class Room {
     return this.guest == null;
   }
 
-  public Room checkIn(Guest guest) {
+  public String checkIn(Guest guest) {
     this.guest = guest;
     this.guests.add(guest);
-    return this;
+    return "Successful checkin in room " + info();
   }
 
   public String info() {

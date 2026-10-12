@@ -39,14 +39,11 @@ public class Hotel {
         + String.join("\n", rooms);
   }
 
-  public void checkin() {
+  public String checkin() {
     List<Room> rooms = this.rooms.stream().filter(Room::isAvailable).toList();
-    if (rooms.isEmpty()) {
-      System.out.println("No rooms are available");
-    } else {
-      Room room = rooms.get(random.nextInt(rooms.size())).checkIn(readGuest());
-      System.out.println("Successful checkin in room " + room.info());
-    }
+    return rooms.isEmpty()
+      ? "No rooms are available"
+      : rooms.get(random.nextInt(rooms.size())).checkIn(readGuest());
   }
 
   private Guest readGuest() {
@@ -72,11 +69,11 @@ public class Hotel {
     return new Guest(firstName, lastName);
   }
 
-  public void checkout() {
+  public String checkout() {
     Guest guest = rooms.get(readNumber() - 1).checkOut();
-    System.out.println(guest == null
+    return guest == null
         ? "Room is not occupied"
-        : guest + " was successfully checked out");
+        : guest + " was successfully checked out";
   }
 
   public String roomHistory() {
